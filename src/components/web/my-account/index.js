@@ -1,5 +1,5 @@
 import { Card, Grid, Paper } from "@material-ui/core";
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
@@ -22,7 +22,9 @@ const MyAccount = (props) => {
       setAddress(auth.user.address);
     }
   }, [auth]);
-
+  if (!auth.authenticate) {
+    return <Redirect to={`/login`} />;
+  }
   return (
     <div>
       <Grid container className="shopping_cart">
@@ -233,7 +235,6 @@ const MyAccount = (props) => {
                       </button>
                     </div>
                   </Grid>
-               
                 </Grid>
               </Paper>
             </Grid>

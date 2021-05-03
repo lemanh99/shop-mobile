@@ -1,5 +1,5 @@
 import { Card, Grid, Paper } from "@material-ui/core";
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getOrderById, orderDeliveryed } from "../../../actions/orderAction";
@@ -37,7 +37,9 @@ const HistoryOrder = (props) => {
       order_list.push(data);
     });
   });
-  console.log(order_list);
+  if (!auth.authenticate) {
+    return <Redirect to={`/login`} />;
+  }
 
   return (
     <div>

@@ -14,16 +14,28 @@ const Register = () => {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [address, setAddress] = useState("");
   const [message, setMessage] = useState("");
+  const [click, setClick] = useState(false);
 
   const dispatch = useDispatch();
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  useEffect(() => {
+    if(click === true){
+      if (auth.error !== "") {
+        setMessage(auth.error);
+      }
+    }
+
+  }, [auth.error, click]);
+  
   if (auth.authenticate) {
     return <Redirect to={`/`} />;
   }
 
   const handleRegister = (e) => {
+    setClick(true);
     e.preventDefault();
     const user = {
       firstName,
@@ -61,6 +73,19 @@ const Register = () => {
         <div className="main-agileits">
           <div className="form-w3agile form1">
             <h3>Register</h3>
+            {message ? (
+              <div
+                style={{
+                  marginBottom: "25px",
+                  marginTop: "-25px",
+                  textAlign: "center",
+                }}
+              >
+                <div className="_3VM3wx" style={{ color: "red" }}>
+                  {message}
+                </div>
+              </div>
+            ) : null}
             <form
               method="post"
               enctype="multipart/form-data"
@@ -152,7 +177,7 @@ const Register = () => {
                 />
                 <div className="clearfix" />
               </div>
-              <div style={{marginTop:"15px"}}>
+              <div style={{ marginTop: "15px" }}>
                 <div className="_3VM3wx">
                   By continuing, you agree to big mobile shop's
                   <Link

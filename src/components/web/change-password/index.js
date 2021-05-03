@@ -1,11 +1,16 @@
 import { Card, Grid, Paper } from "@material-ui/core";
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import React, { useState } from "react";
+import { useSelector } from "react-redux";
 
 const ChangePassword = (props) => {
-    const [password, setPassword] = useState("");
-    const [old_password, setOldPassword] = useState("");
-    const [confirm_password, setConfirmPassword] = useState("");
+  const auth = useSelector((state) => state.auth);
+  const [password, setPassword] = useState("");
+  const [old_password, setOldPassword] = useState("");
+  const [confirm_password, setConfirmPassword] = useState("");
+  if (!auth.authenticate) {
+    return <Redirect to={`/login`} />;
+  }
 
   return (
     <div>

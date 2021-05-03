@@ -16,7 +16,7 @@ const Login = () => {
   }, []);
 
   useEffect(() => {
-    if ((auth.error !== "") ) {
+    if ((auth.error !== "" ) ) {
       setMessage(auth.error);
     }
     if (auth.block === true && (click === true)) {
