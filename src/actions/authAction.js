@@ -48,6 +48,15 @@ export const signin = (user) => {
         },
       });
     }
+    if(res.status === 204){
+      const { error } = res.data;
+      dispatch({
+        type: authConstants.AUTH_BLOCK,
+        payload: {
+          error: error
+        }
+      })
+    }
     if (res.status === 200) {
       const { token, user } = res.data;
       localStorage.setItem("token", token);

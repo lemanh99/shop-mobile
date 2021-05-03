@@ -16,6 +16,7 @@ const initState = {
   loading: false,
   error: null,
   message: null,
+  block: false,
 
 };
 
@@ -44,6 +45,7 @@ export default (state = initState, action) => {
       state = {
         ...state,
         authenticating: true,
+        block: false,
       };
       break;
     case authConstants.LOGIN_SUCCESS:
@@ -54,6 +56,7 @@ export default (state = initState, action) => {
         loading: false,
         authenticate: true,
         authenticating: false,
+        block: false,
       };
       break;
     case authConstants.LOGIN_FAILURE:
@@ -61,12 +64,14 @@ export default (state = initState, action) => {
         ...initState,
         error: action.payload.error,
         loading: false,
+        block: false,
       };
       break;
     case authConstants.LOGOUT_REQUEST:
       state = {
         ...state,
         loading: true,
+        block: false,
       };
       break;
     case authConstants.LOGOUT_SUCCESS:
@@ -81,8 +86,14 @@ export default (state = initState, action) => {
         ...state,
         error: action.payload.error,
         loading: false,
+        block: false,
       };
       break;
+    case authConstants.AUTH_BLOCK:
+      state = {
+        ...initState,
+        block: true,
+      }
   }
   return state;
 };

@@ -2,7 +2,7 @@ import { Card, Grid, Paper } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getOrderById } from "../../../actions/orderAction";
+import { getOrderById, orderDeliveryed } from "../../../actions/orderAction";
 
 const HistoryOrder = (props) => {
   const auth = useSelector((state) => state.auth);
@@ -15,13 +15,19 @@ const HistoryOrder = (props) => {
     }
   }, [auth.user._id]);
 
+  const handleConfirm = (event) => {
+    dispatch(orderDeliveryed(event.target.value));
+  };
+
   let order_list = [];
   orders.map((order, index) => {
+    const id = order._id;
     const status = order.orderStatus.find(
       (status) => status.isCompleted === true
     );
     order.productDetail.map((product) => {
       var data = {
+        id,
         name: product.productId ? product.productId.name : null,
         price: product.payablePrice,
         quantity: product.purchasedQty,
@@ -127,6 +133,7 @@ const HistoryOrder = (props) => {
                       <th className="t-head">Quantity</th>
                       <th className="t-head">Status</th>
                       <th className="t-head">Payment Status</th>
+                      <th className="t-head">Confirm</th>
                     </tr>
                     {order_list.map((order, index) => {
                       return (
@@ -137,6 +144,19 @@ const HistoryOrder = (props) => {
 
                           <td className="t-data">{order.orderStatus}</td>
                           <td className="t-data">{order.paymentStatus}</td>
+                          {order.orderStatus !== "delivered" ||
+                          order.paymentStatus === "cancelled" ? (
+                            <td className="t-data">
+                              <button
+                                class="_2AkmmA EqjTfe _7UHT_c"
+                                type="button"
+                                value={order.id}
+                                onClick={handleConfirm}
+                              >
+                                received
+                              </button>
+                            </td>
+                          ) : null}
                         </tr>
                       );
                     })}

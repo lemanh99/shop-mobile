@@ -16,6 +16,8 @@ export const authConstants = {
   LOGOUT_REQUEST: "LOGOUT_REQUEST",
   LOGOUT_SUCCESS: "LOGOUT_SUCCESS",
   LOGOUT_FAILURE: "LOGOUT_FAILURE",
+
+  AUTH_BLOCK: "AUTH_BLOCK",
 };
 
 export const categoryConstants = {

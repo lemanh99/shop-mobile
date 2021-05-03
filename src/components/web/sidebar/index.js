@@ -32,8 +32,7 @@ class Sidebar extends Component {
                         <li><Link to="#" className="closebtn">&times;</Link></li>
                         <li><Link to="/">Home</Link></li>
                         <li><Link to="/categories">Shop By Category</Link></li>
-                        <li><Link to="#">offers</Link></li>
-                        <li><Link to="#">Orders</Link></li>
+                        <li><Link to="/history">Orders</Link></li>
                         <li><Link to="/login">Login</Link></li>
                     </ul>
                 </div>

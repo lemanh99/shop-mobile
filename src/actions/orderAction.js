@@ -83,3 +83,18 @@ export const getOrderById = (id) => {
     }
   };
 };
+
+
+export const orderDeliveryed = (id) => {
+  
+  return async (dispatch) => {
+    console.log('id', id)
+    const res = await axios.post(`/confirm-delivered/${id}`);
+    if (res.status === 201) {
+      dispatch(getOrderById());
+    } else {
+      const { error } = res.data;
+      console.log(error);
+    }
+  };
+};
