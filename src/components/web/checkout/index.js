@@ -1,10 +1,17 @@
 import React, { Component, useEffect, useState } from "react";
-import { Grid, Paper } from "@material-ui/core/";
+import { Grid, Modal, Paper } from "@material-ui/core/";
 import Summarycart from "./summarycart";
 import { connect, useDispatch, useSelector } from "react-redux";
 import { productQuantity, clearProduct } from "../../../actions/cartQuantity";
 import { Link, Redirect } from "react-router-dom";
 import { addOrder } from "../../../actions/orderAction";
+
+import Button from "@material-ui/core/Button";
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import DialogTitle from "@material-ui/core/DialogTitle";
 
 const Checkout = () => {
   const auth = useSelector((state) => state.auth);
@@ -16,12 +23,11 @@ const Checkout = () => {
   const [username, setUsername] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [address, setAddress] = useState("");
+  const [open, setOpend] = useState(false);
+  //0 : chua hoan thanh, 1: thanh toan bang the, 2: thanh toan papal, 3: thanh toan giao hang tai nha
+  const [typePayment, setTypePayment] = useState(0);
+  const [message, setMessage] = useState("");
   const dispatch = useDispatch();
-
-  // const [step1, setStep1] = useState(false);
-  // const [step2, setStep2] = useState(false);
-  // const [step3, setStep3] = useState(false);
-
 
   useEffect(() => {
     if (auth) {
@@ -34,19 +40,44 @@ const Checkout = () => {
     }
   }, [auth]);
 
-  const handleSubmitOrder = ()=>{
-    dispatch(addOrder())
-  }
-  if(!cartProps){
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    setMessage("");
+  }, []);
+
+  const handleSubmitOrder = () => {
+    dispatch(addOrder(typePayment));
+    setOpend(false);
+    return <Redirect to={`/history`} />;
+  };
+  const handleOpen = () => {
+    if (phoneNumber === "") {
+      setMessage("Phone number cannot be empty");
+      window.scrollTo(0, 0);
+      setOpend(false);
+      return;
+    }
+    if (address === "") {
+      setMessage("Address cannot be empty");
+      window.scrollTo(0, 0);
+      setOpend(false);
+      return;
+    }
+    setOpend(true);
+  };
+  const handleClose = () => {
+    setOpend(false);
+  };
+
+  if (!cartProps) {
     return <Redirect to={`/`} />;
   }
-  if(orderProps.addOrder){
-    return<Redirect to={`/history`} />
+  if (orderProps.addOrder) {
+    return <Redirect to={`/history`} />;
   }
-  if (!auth.authenticate ) {
+  if (!auth.authenticate) {
     return <Redirect to={`/login`} />;
   }
-
 
   return (
     <div>
@@ -74,6 +105,21 @@ const Checkout = () => {
                   <span className="_1_m52b">Delivery Address</span>
                 </h3>
                 <Grid container spacing={4} className="address_bk_checkout ">
+                  <Grid
+                    className="address_bk_checkout"
+                    item
+                    xs={12}
+                    sm={12}
+                    md={12}
+                    xl={12}
+                    lg={12}
+                  >
+                    <div className="row" style={{ textAlign: "center" }}>
+                      <div className="_3VM3wx" style={{ color: "red" }}>
+                        {message}
+                      </div>
+                    </div>
+                  </Grid>
                   <Grid
                     className="address_field_bk"
                     item
@@ -202,7 +248,21 @@ const Checkout = () => {
               </Paper>
 
               {/* 2nd end block address */}
-              <Summarycart cartProps={cartProps} user = {auth.user} handleSubmitOrder = {handleSubmitOrder}/>
+              <Summarycart
+                cartProps={cartProps}
+                user={auth.user}
+                setTypePayment={setTypePayment}
+                totalMoney={cartProps.cartPrice}
+              />
+              <div id="to-payment">
+                <button
+                  className="_continue"
+                  style={{ marginBottom: "7px" }}
+                  onClick={handleOpen}
+                >
+                  Continue
+                </button>
+              </div>
             </Grid>
 
             <Grid item xs={12} sm={12} md={12} xl={4} lg={4}>
@@ -238,6 +298,31 @@ const Checkout = () => {
         </Grid>
         <Grid item xs={2} sm={2} md={2} xl={2} lg={2}></Grid>
       </Grid>
+      <div>
+        <Dialog
+          open={open}
+          onClose={handleClose}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">
+            {"You confirm the payment?"}
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              Check account information and delivery information
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleClose} color="primary">
+              Disagree
+            </Button>
+            <Button onClick={handleSubmitOrder} color="primary" autoFocus>
+              Agree
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </div>
     </div>
   );
 };

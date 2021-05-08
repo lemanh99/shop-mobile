@@ -23,7 +23,7 @@ export const getOrders = () => {
   };
 };
 
-export const addOrder = () => {
+export const addOrder = (typePayment) => {
   const cart = JSON.parse(localStorage.getItem("cart"));
   let productDetails = [];
   Object.keys(cart.products).forEach(function (item) {
@@ -40,7 +40,7 @@ export const addOrder = () => {
   });
   const data = {
     totalAmount: Math.round(cart.cartPrice),
-    paymentStatus: "pending",
+    paymentStatus: typePayment!==2?"pending":"completed",
     productDetail: productDetails,
   };
   return async (dispatch) => {

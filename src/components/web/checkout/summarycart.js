@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, useState } from "react";
 import {
   Grid,
   Paper,
@@ -9,17 +9,43 @@ import {
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { useSelector } from "react-redux";
 import { generatePublicUrl } from "../../../urlConfig";
+import Paypal from "../payment/component/Paypal";
 
 const Summarycart = (props) => {
-  const { cartProps, user, handleSubmitOrder } = props;
+  const { cartProps, user, setTypePayment, totalMoney } = props;
+  const [type1, setType1] = useState(true);
+  const [type2, setType2] = useState(true);
+  const [type3, setType3] = useState(true);
+  const [statusPaypal, setStatusPaypal] = useState(0);
+  const [message, setMessage] = useState("");
 
+  const handlePaymentDelivery = () => {
+    setTypePayment(3);
+    setType1(false);
+    setType2(false);
+    setType3(true);
+  };
+  const handlePaymentPaypalSuccess = () => {
+    setTypePayment(2);
+    setStatusPaypal(1);
+    setType1(false);
+    setType2(true);
+    setType3(false);
+  };
+
+  const handlePaymentPaypalFailed = () => {
+    setStatusPaypal(2);
+    setType1(false);
+    setType2(false);
+    setType3(false);
+  };
   let productsInCart = [];
 
-  const  handleAddDay = ( days)=> {
-    var newDate = new Date(Date.now() + days*24*60*60*1000);
-    let today = newDate.toISOString().slice(0, 10)
+  const handleAddDay = (days) => {
+    var newDate = new Date(Date.now() + days * 24 * 60 * 60 * 1000);
+    let today = newDate.toISOString().slice(0, 10);
     return today;
-  }
+  };
   Object.keys(cartProps.products).forEach(function (item) {
     if (cartProps.products[item].inCart) {
       productsInCart.push(cartProps.products[item]);
@@ -61,8 +87,7 @@ const Summarycart = (props) => {
                         height="94"
                       />
                     </div>
-                    <div className="_3RkJty">
-                    </div>
+                    <div className="_3RkJty"></div>
                   </Grid>
                   <Grid item xs={6} sm={6} md={6} xl={6} lg={6}>
                     <div className="_3vIvU_bk">
@@ -94,8 +119,7 @@ const Summarycart = (props) => {
               <Grid item xs={12} sm={12} md={8} xl={8} lg={8}>
                 <div>
                   <h5>
-                    Information order detail will be sent to{" "}
-                    <b>{user.email}</b>
+                    Information order detail will be sent to <b>{user.email}</b>
                   </h5>
                 </div>
               </Grid>
@@ -115,163 +139,239 @@ const Summarycart = (props) => {
             <span className="_1Tmvyj">3</span>
             <span className="_1_m52b">Payment Options</span>
           </h3>
-          <ExpansionPanel>
-            <ExpansionPanelSummary
-              expandIcon={<ExpandMoreIcon />}
-              aria-controls="panel1a-content"
-              id="panel1a-header"
-            >
-              <h5>1. Credit / Debit / ATM Card</h5>
-            </ExpansionPanelSummary>
-            <ExpansionPanelDetails className="card_details_parent">
-              <div className="credit_card_details">
-                <Grid container>
-                  <Grid
-                    className="address_field_bk"
-                    item
-                    xs={12}
-                    sm={12}
-                    md={12}
-                    xl={8}
-                    lg={8}
-                  >
-                    <div className="panel panel-default credit-card-box">
-                      <div className="panel-heading display-table">
-                        <div className="row display-tr">
-                          <h3 className="panel-title display-td">
-                            Payment Details
-                          </h3>
-                          <div className="display-td">
-                            {/* <img
+          {type1 === true ? (
+            <ExpansionPanel>
+              <ExpansionPanelSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel1a-content"
+                id="panel1a-header"
+              >
+                <h5>1. Credit / Debit / ATM Card</h5>
+              </ExpansionPanelSummary>
+              <ExpansionPanelDetails className="card_details_parent">
+                <div className="credit_card_details">
+                  <Grid container>
+                    <Grid
+                      className="address_field_bk"
+                      item
+                      xs={12}
+                      sm={12}
+                      md={12}
+                      xl={8}
+                      lg={8}
+                    >
+                      <div className="row" style={{ textAlign: "center" }}>
+                        <div className="_3VM3wx" style={{ color: "red" }}>
+                          Payment method not yet supported
+                        </div>
+                      </div>
+                      <div className="panel panel-default credit-card-box">
+                        <div className="panel-heading display-table">
+                          <div className="row display-tr">
+                            <h3 className="panel-title display-td">
+                              Payment Details
+                            </h3>
+                            <div className="display-td">
+                              {/* <img
                               className=""
                               src="/images/card-icon.png"
                               width="15"
                               height="15"
                               alt="accept"
                             /> */}
+                            </div>
                           </div>
                         </div>
-                      </div>
-                      <div className="panel-body">
-                        <form id="payment-form">
-                          <div className="row">
-                            <div className="col-xs-12">
-                              <div className="form-group">
-                                <label htmlFor="cardNumber">CARD NUMBER</label>
-                                <div className="input-group">
-                                  <input
-                                    type="tel"
-                                    className="form-control"
-                                    name="cardNumber"
-                                    placeholder="Valid Card Number"
-                                    autoComplete="cc-number"
-                                    required
-                                    autofocus
-                                  />
-                                  <span className="input-group-addon">
-                                    <i className="fa fa-credit-card" />
-                                  </span>
+                        <div className="panel-body">
+                          <form id="payment-form">
+                            <div className="row">
+                              <div className="col-xs-12">
+                                <div className="form-group">
+                                  <label htmlFor="cardNumber">
+                                    CARD NUMBER
+                                  </label>
+                                  <div className="input-group">
+                                    <input
+                                      type="tel"
+                                      className="form-control"
+                                      name="cardNumber"
+                                      placeholder="Valid Card Number"
+                                      autoComplete="cc-number"
+                                      required
+                                      autofocus
+                                    />
+                                    <span className="input-group-addon">
+                                      <i className="fa fa-credit-card" />
+                                    </span>
+                                  </div>
                                 </div>
                               </div>
                             </div>
-                          </div>
-                          <div className="row">
-                            <div className="col-xs-7 col-md-7">
-                              <div className="form-group">
-                                <label htmlFor="cardExpiry">
-                                  <span className="hidden-xs">EXPIRATION</span>
-                                  <span className="visible-xs-inline">
-                                    EXP
-                                  </span>{" "}
-                                  DATE
-                                </label>
-                                <input
-                                  type="tel"
-                                  className="form-control"
-                                  name="cardExpiry"
-                                  placeholder="MM / YY"
-                                  autoComplete="cc-exp"
-                                  required
-                                />
+                            <div className="row">
+                              <div className="col-xs-7 col-md-7">
+                                <div className="form-group">
+                                  <label htmlFor="cardExpiry">
+                                    <span className="hidden-xs">
+                                      EXPIRATION
+                                    </span>
+                                    <span className="visible-xs-inline">
+                                      EXP
+                                    </span>{" "}
+                                    DATE
+                                  </label>
+                                  <input
+                                    type="tel"
+                                    className="form-control"
+                                    name="cardExpiry"
+                                    placeholder="MM / YY"
+                                    autoComplete="cc-exp"
+                                    required
+                                  />
+                                </div>
+                              </div>
+                              <div className="col-xs-5 col-md-5 pull-right">
+                                <div className="form-group">
+                                  <label htmlFor="cardCVC">CV CODE</label>
+                                  <input
+                                    type="tel"
+                                    className="form-control"
+                                    name="cardCVC"
+                                    placeholder="CVC"
+                                    autoComplete="cc-csc"
+                                    required
+                                  />
+                                </div>
                               </div>
                             </div>
-                            <div className="col-xs-5 col-md-5 pull-right">
-                              <div className="form-group">
-                                <label htmlFor="cardCVC">CV CODE</label>
-                                <input
-                                  type="tel"
-                                  className="form-control"
-                                  name="cardCVC"
-                                  placeholder="CVC"
-                                  autoComplete="cc-csc"
-                                  required
-                                />
+                            <div className="row">
+                              <div className="col-xs-12">
+                                <div className="form-group">
+                                  <label htmlFor="couponCode">
+                                    COUPON CODE
+                                  </label>
+                                  <input
+                                    type="text"
+                                    className="form-control"
+                                    name="couponCode"
+                                  />
+                                </div>
                               </div>
                             </div>
-                          </div>
-                          <div className="row">
-                            <div className="col-xs-12">
-                              <div className="form-group">
-                                <label htmlFor="couponCode">COUPON CODE</label>
-                                <input
-                                  type="text"
-                                  className="form-control"
-                                  name="couponCode"
-                                />
+                            <div className="row">
+                              <div className="col-xs-12">
+                                <button
+                                  className="btn btn-success btn-lg btn-block"
+                                  type="submit"
+                                >
+                                  Pay ${Math.round(cartProps.cartPrice)}
+                                </button>
                               </div>
                             </div>
-                          </div>
-                          <div className="row">
-                            <div className="col-xs-12">
-                              <button
-                                className="btn btn-success btn-lg btn-block"
-                                type="submit"
-                              >
-                                Pay ${Math.round(cartProps.cartPrice)}
-                              </button>
+                            <div className="row" style={{ display: "none" }}>
+                              <div className="col-xs-12">
+                                <p className="payment-errors" />
+                              </div>
                             </div>
-                          </div>
-                          <div className="row" style={{ display: "none" }}>
-                            <div className="col-xs-12">
-                              <p className="payment-errors" />
-                            </div>
-                          </div>
-                        </form>
+                          </form>
+                        </div>
+                      </div>
+                    </Grid>
+                  </Grid>
+                </div>
+              </ExpansionPanelDetails>
+            </ExpansionPanel>
+          ) : null}
+
+          {type2 === true ? (
+            <ExpansionPanel>
+              <ExpansionPanelSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel2a-content"
+                id="panel2a-header"
+              >
+                <h5>2. Payment with Paypal</h5>
+              </ExpansionPanelSummary>
+              <ExpansionPanelDetails className="card_details_parent">
+                {statusPaypal === 1 ? (
+                  <div className="row" style={{ textAlign: "center" }}>
+                    <div
+                      className="panel-title display-td"
+                      style={{ color: "#00ff1f", marginBottom: "10px" }}
+                    >
+                      Payment success
+                    </div>
+                  </div>
+                ) : null}
+                {statusPaypal === 2 ? (
+                  <div className="row" style={{ textAlign: "center" }}>
+                    <div
+                      className="panel-title display-td"
+                      style={{ color: "red", marginBottom: "10px" }}
+                    >
+                      Payment failed
+                    </div>
+                  </div>
+                ) : null}
+
+                <div className="clearfix">
+                  {statusPaypal === 0 ? (
+                    <Paypal
+                      totalMoney={totalMoney}
+                      handlePaymentPaypalSuccess={handlePaymentPaypalSuccess}
+                      handlePaymentPaypalFailed={handlePaymentPaypalFailed}
+                    />
+                  ) : null}
+                </div>
+              </ExpansionPanelDetails>
+            </ExpansionPanel>
+          ) : null}
+
+          {type3 === true ? (
+            <ExpansionPanel>
+              <ExpansionPanelSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel2a-content"
+                id="panel2a-header"
+              >
+                <h5>3. Cash on Delivery</h5>
+              </ExpansionPanelSummary>
+              <ExpansionPanelDetails className="card_details_parent">
+                <div className="clearfix">
+                  <div
+                    className="payment-confirm-tip"
+                    data-spm-anchor-id="a2a0e.payment_page.0.i6.28766af7uWKlE7"
+                  >
+                    You can pay in cash to our courier when you receive the
+                    goods at your doorstep.
+                  </div>
+                </div>
+                <div id="to-payment">
+                  {type1 === false && type2 === false && type3 === true ? (
+                    <div className="row" style={{ textAlign: "right" }}>
+                      <div
+                        className="panel-title display-td"
+                        style={{ color: "#00ff1f", marginRight: "10px" }}
+                      >
+                        Successful confirmation
                       </div>
                     </div>
-                  </Grid>
-                </Grid>
-              </div>
-            </ExpansionPanelDetails>
-          </ExpansionPanel>
-          <ExpansionPanel>
-            <ExpansionPanelSummary
-              expandIcon={<ExpandMoreIcon />}
-              aria-controls="panel2a-content"
-              id="panel2a-header"
-            >
-              <h5>2. Cash on Delivery</h5>
-            </ExpansionPanelSummary>
-            <ExpansionPanelDetails className="card_details_parent">
-              <div className="clearfix">
-                <div
-                  className="payment-confirm-tip"
-                  data-spm-anchor-id="a2a0e.payment_page.0.i6.28766af7uWKlE7"
-                >
-                  You can pay in cash to our courier when you receive the goods
-                  at your doorstep.
+                  ) : (
+                    <button
+                      className="_continue"
+                      style={{ marginBottom: "7px" }}
+                      onClick={handlePaymentDelivery}
+                    >
+                      confirm order
+                    </button>
+                  )}
                 </div>
-              </div>
-              <div id="to-payment" >
-                <button className="_continue" style={{marginBottom:"5px"}} onClick={handleSubmitOrder}>confirm order</button>
-              </div>
-            </ExpansionPanelDetails>
-          </ExpansionPanel>
+              </ExpansionPanelDetails>
+            </ExpansionPanel>
+          ) : null}
         </div>
       </Paper>
-      <div style={{marginTop:"20px"}}></div>
+      <div style={{ marginTop: "20px" }}></div>
     </div>
-    
   );
 };
 

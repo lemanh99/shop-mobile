@@ -20,6 +20,7 @@ import HistoryOrder from './history-order';
 import ChangePassword from './change-password';
 import Singleproduct from './singleproduct';
 import Logout from '../auth/logout';
+import Payment from './payment';
 export default class Main extends Component {
   render() {
       return (

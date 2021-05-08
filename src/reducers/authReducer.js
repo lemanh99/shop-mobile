@@ -8,6 +8,9 @@ const initState = {
     firstName: "",
     lastName: "",
     email: "",
+    fullName: "",
+    address: "",
+    phoneNumber: "",
     picture: "",
     role: "",
   },
@@ -17,7 +20,6 @@ const initState = {
   error: null,
   message: null,
   block: false,
-
 };
 
 export default (state = initState, action) => {
@@ -93,7 +95,16 @@ export default (state = initState, action) => {
       state = {
         ...initState,
         block: true,
-      }
+      };
+    case authConstants.UPDATE_INFORMATION_SUCCESS:
+      state = {
+        ...state,
+        message: "",
+        error: "",
+        user: action.payload.user,
+        loading: false,
+      };
+      break;
   }
   return state;
 };
