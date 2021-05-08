@@ -45,7 +45,7 @@ const Header = (props) => {
                       <b>
                         T<br />H<br />E
                       </b>
-                      Big Store<span>The Best Mobile</span>
+                      D-Store<span>The Best Mobile</span>
                     </Link>
                   </h1>
                 </div>

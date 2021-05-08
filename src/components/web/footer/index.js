@@ -66,13 +66,13 @@ export default class Footer extends Component {
                 <b>
                   T<br />H<br />E
                 </b>
-                Big Store<span>The Best Supermarket</span>
+                D-Store<span>The Best Supermarket</span>
               </Link>
             </h2>
             <p className="fo-para">
               This is {" "}
               <Link target="_blank" to="http://github.com/lemanh99">
-                Course projects information system
+                Course projects information system. {" "}
               </Link>
               Application written by language ReactJS
             </p>
@@ -124,7 +124,7 @@ export default class Footer extends Component {
           </div>
           <div className="copy-right">
             <p>
-              © 2021 Big store. All Rights Reserved | Design by{" "}
+              © 2021 D store. All Rights Reserved | Design by{" "}
               <Link to="http://github.com/lemanh99"> Team</Link>
             </p>
           </div>
