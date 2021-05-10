@@ -12,10 +12,10 @@ const Header = (props) => {
   const brands = useSelector((state) => state.brand);
   const categories = useSelector((state) => state.category);
   const [width, setWidth] = useState(window.innerWidth);
+  const [search, setSearch] = useState("");
 
   const dispatch = useDispatch();
   useEffect(() => {
-    
     dispatch(getListBrand());
     dispatch(getListCategory());
   }, [dispatch]);
@@ -52,13 +52,27 @@ const Header = (props) => {
               </Grid>
               <Grid item md={6} lg={7} xl={6}>
                 <div className="search-form">
-                  <form action="#" method="post">
+                  {/* <div>
                     <input
                       type="text"
                       name="search"
+                      value = {search}
                       placeholder="Search for Products..."
+                      onChange={(e) =>setSearch(e.target.value)}
                     />
-                    <button className="btn search__btn">
+                    <Link to={`/product/search?name=${search}`} className="btn search__btn">
+                      <i className="fa fa-search" aria-hidden="true"></i>
+                    </Link>
+                  </div> */}
+                  <form action={`/product/search?${search}`}>
+                    <input
+                      type="text"
+                      name="search"
+                      value={search}
+                      placeholder="Search for Products..."
+                      onChange={(e) => setSearch(e.target.value)}
+                    />
+                    <button className="btn search__btn" type="submit">
                       <i className="fa fa-search" aria-hidden="true"></i>
                     </button>
                   </form>
@@ -72,9 +86,7 @@ const Header = (props) => {
                       <Grid item md={4} lg={4} xl={4} className="btn_login">
                         <Link to={"/my-account"}>
                           <Button className="login" variant="outlined">
-                            <span>
-                              {auth.user.firstName}
-                            </span>
+                            <span>{auth.user.firstName}</span>
                           </Button>
                         </Link>
                       </Grid>
@@ -93,9 +105,7 @@ const Header = (props) => {
                       <Grid item md={4} lg={4} xl={4} className="btn_login">
                         <Link to={"/logout"}>
                           <Button className="login" variant="outlined">
-                            <span>
-                              Logout
-                            </span>
+                            <span>Logout</span>
                           </Button>
                         </Link>
                       </Grid>
@@ -159,7 +169,10 @@ const Header = (props) => {
                     </li>
                     {categories.listCategory.map((category) => (
                       <li className="dropdown ">
-                        <Link to="/kitchen" className="dropdown-toggle  hyper">
+                        <Link
+                          to={`/category/${category._id}`}
+                          className="dropdown-toggle  hyper"
+                        >
                           <span>
                             {category.name}
                             <b className="caret" />
@@ -175,7 +188,7 @@ const Header = (props) => {
                                   )
                                   .map((brand) => (
                                     <li>
-                                      <Link to={ `/brand/${brand._id}`}>
+                                      <Link to={`/brand/${brand._id}`}>
                                         <i
                                           className="fa fa-angle-right"
                                           aria-hidden="true"

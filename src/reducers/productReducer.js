@@ -22,7 +22,7 @@ export default (state = initialState, action) => {
       };
     case productConstants.GET_ALL_PRODUCT_FAILURE:
       return {
-        ...state,
+        ...initialState,
         product_detail: {},
         loading: false,
         error: action.payload.error,

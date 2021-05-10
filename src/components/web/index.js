@@ -21,6 +21,8 @@ import ChangePassword from './change-password';
 import Singleproduct from './singleproduct';
 import Logout from '../auth/logout';
 import Payment from './payment';
+import CategoryDetail from './category-detail';
+import Search from './search';
 export default class Main extends Component {
   render() {
       return (
@@ -30,6 +32,7 @@ export default class Main extends Component {
             <Switch>
               <Route exact path='/' component={Home} />
               <Route path='/brand/:id' component={BrandDetail} />
+              <Route path='/category/:id' component={CategoryDetail} />
               <Route path="/product-details/:id" component={Singleproduct} />
               <Route path='/contact' component={Contact} />
               <Route path='/faq' component={Faq} />
@@ -45,6 +48,7 @@ export default class Main extends Component {
               <Route path='/my-account' component={MyAccount} />
               <Route path='/history' component={HistoryOrder} />
               <Route path='/change-password' component={ChangePassword} />
+              <Route path='/product/search' component={Search} />
               <Route component={NotFound} />
             </Switch>
             <Footer />
