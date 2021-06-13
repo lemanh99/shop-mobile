@@ -40,7 +40,7 @@ export const addOrder = (typePayment) => {
   });
   const data = {
     totalAmount: Math.round(cart.cartPrice),
-    paymentStatus: typePayment!==2?"pending":"completed",
+    paymentStatus: typePayment !== 2 ? "pending" : "completed",
     productDetail: productDetails,
   };
   return async (dispatch) => {
@@ -72,7 +72,7 @@ export const getOrderById = (id) => {
       dispatch({
         type: orderConstants.GET_ORDER_BY_ID_SUCCESS,
         payload: {
-          orders: [ ...orders ],
+          orders: [...orders],
         },
       });
     } else {
@@ -84,14 +84,12 @@ export const getOrderById = (id) => {
   };
 };
 
-
-export const orderDeliveryed = (id) => {
-  
+export const orderDeliveryed = (id, id_user) => {
   return async (dispatch) => {
-    console.log('id', id)
+    console.log("id", id);
     const res = await axios.post(`/confirm-delivered/${id}`);
     if (res.status === 201) {
-      dispatch(getOrderById());
+      dispatch(getOrderById(id_user));
     } else {
       const { error } = res.data;
       console.log(error);

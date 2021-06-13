@@ -8,7 +8,6 @@ const HistoryOrder = (props) => {
   const auth = useSelector((state) => state.auth);
   const orders = useSelector((state) => state.order.orders);
   const dispatch = useDispatch();
-  console.log(orders);
   useEffect(() => {
     if (auth.user._id) {
       dispatch(getOrderById(auth.user._id));
@@ -16,10 +15,11 @@ const HistoryOrder = (props) => {
   }, [auth.user._id]);
 
   const handleConfirm = (event) => {
-    dispatch(orderDeliveryed(event.target.value));
+    dispatch(orderDeliveryed(event.target.value, auth.user._id));
   };
 
   let order_list = [];
+  console.log(orders);
   orders.map((order, index) => {
     const id = order._id;
     const status = order.orderStatus.find(
